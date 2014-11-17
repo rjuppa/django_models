@@ -1,0 +1,30 @@
+{% extends "page_layout.html" %}{% load i18n %}
+
+{% block content %}
+
+    <p>
+        <h2>New coupon was created.</h2>
+    </p>
+
+
+    <table style="width: 320px">
+
+    {% for field in form.visible_fields %}
+        <tr>
+            <td><b>{{ field.label }}:</b></td>
+            <td>{{ field.value }}</td>
+        </tr>
+    {% endfor %}
+
+        <tr>
+            <td style="width: 120px"></td>
+            <td style="width: 200px">&nbsp;</td>
+        </tr>
+    </table>
+
+    <p>
+        <a href="/coupons/newcoupon/">Add New Coupon</a>
+    </p>
+
+
+{% endblock %}
