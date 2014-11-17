@@ -1,10 +1,12 @@
 import string
 import random
-import datetime
+import pytz
+from datetime import datetime, timedelta
 from django.db import models
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.core.validators import *
+
 
 class CouponManager(models.Manager):
     """
@@ -20,9 +22,10 @@ class CouponManager(models.Manager):
     def create_coupon(self):
         # create
         c = Coupon(code=self.generate_code(),
+                   method_name='',
                    limit_time=True,
                    time_from=timezone.now().today(),
-                   time_to=timezone.now().today() + datetime.timedelta(days=30),
+                   time_to=timezone.now().today() + timedelta(days=30),
                    limit_email=False,
                    email='',
                    limit_count=True,
@@ -136,7 +139,7 @@ class Coupon(models.Model):
          Set coupon active means coupon is ready to use
         """
         if self.status == 2:
-            raise ValueError(message='Coupon was already used.')
+            raise ValueError('Coupon was already used.')
 
         self.status = 1
         self.full_clean()
@@ -147,27 +150,27 @@ class Coupon(models.Model):
          Check limits
         """
         if self.status == 0:
-            raise ValueError(message='Coupon is inactive.')
+            raise ValueError('Coupon is inactive.')
 
         if self.status == 2:
-            raise ValueError(message='Coupon was already used.')
+            raise ValueError('Coupon was already used.')
 
         if self.limit_time:
             if self.time_to < timezone.now():
-                raise ValueError(message='Coupon has expired.')
+                raise ValueError('Coupon has expired.')
             if self.time_from > timezone.now():
-                raise ValueError(message='Coupon is applicable in future.')
+                raise ValueError('Coupon is applicable in future.')
         if self.limit_count:
             if self.counter >= self.counter_max:
-                raise ValueError(message='Coupon was already used.')
+                raise ValueError('Coupon was already used.')
 
         if self.limit_email:
             if self.email.lower() != user.email.lower():
-                raise ValueError(message='You are not authorized to use this coupon.')
+                raise ValueError('You are not authorized to use this coupon.')
 
         if self.limit_product:
             if self.product.lower() != product_id.lower():
-                raise ValueError(message='The coupon is not applicable to the product.')
+                raise ValueError('The coupon is not applicable to the product.')
 
         # NOT IMPLEMENTED
         if self.method_name == 'DO_SOMETHING':
