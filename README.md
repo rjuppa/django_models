@@ -22,6 +22,8 @@ Coupon may have 4 limits:
  4) product limit
  5) any combination of above limits
 
+
 When it is submited, it's validated against restrictions defined in the model class.
 When form is valid, it is saved to db or an error message is displayed.
 Some basic tests are included.
+
